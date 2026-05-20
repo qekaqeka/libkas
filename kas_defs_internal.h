@@ -1,5 +1,7 @@
 #pragma once
 
+#include "kas_defs.h"
+
 #ifndef KALLSYMS_SYM_MAX_LEN
 #define KALLSYMS_SYM_MAX_LEN 512
 #endif
