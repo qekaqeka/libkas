@@ -1,0 +1,13 @@
+#pragma once
+
+#ifndef KALLSYMS_SYM_MAX_LEN
+#define KALLSYMS_SYM_MAX_LEN 512
+#endif
+
+#ifndef KALLSYMS_LABELS_ALIGN
+#define KALLSYMS_LABELS_ALIGN 8
+#endif
+
+#define KALLSYMS_TOKEN_TABLE_SIZE 256
+
+#define KAS_ALIGN_FILLER ((kas_byte_t)0)
