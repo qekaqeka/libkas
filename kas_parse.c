@@ -12,6 +12,8 @@ struct kas_table {
     struct kas_symbol *symbols;
 
     char *token_table[KALLSYMS_TOKEN_TABLE_SIZE];
+
+    kaddr_t relative_base;
 };
 
 static bool kas_token_table_parse(struct kreader *kreader, struct kas_info *info, char **token_table) {
@@ -164,6 +166,9 @@ struct kas_table *kas_table_parse(struct kreader *kreader, struct kas_info *info
     if ( !kt )
         return NULL;
 
+    if ( !kreader_read_var(kreader, info->relative_base_addr, &kt->relative_base) )
+        goto kt_free;
+
     kt->symbols_nr = info->symbols_nr;
     kt->symbols = kas_calloc(sizeof(struct kas_symbol), kt->symbols_nr);
     if ( !kt->symbols )
@@ -195,10 +200,10 @@ kt_free:
     return NULL;
 }
 
-bool kas_table_get_symbol(struct kas_table *kast, const char *symbol, struct kas_symbol *out) {
-    for ( size_t i = 0; i < kast->symbols_nr; i++ ) {
-        if ( !strcmp(kast->symbols[i].name, symbol) ) {
-            *out = kast->symbols[i];
+bool kas_table_get_symbol(struct kas_table *kt, const char *symbol, struct kas_symbol *out) {
+    for ( size_t i = 0; i < kt->symbols_nr; i++ ) {
+        if ( !strcmp(kt->symbols[i].name, symbol) ) {
+            *out = kt->symbols[i];
             return true;
         }
     }
@@ -206,10 +211,14 @@ bool kas_table_get_symbol(struct kas_table *kast, const char *symbol, struct kas
     return false;
 }
 
-void kas_table_destroy(struct kas_table *kas_table) {
-    for ( size_t i = 0; i < kas_table->symbols_nr; i++ ) {
-        kas_free(kas_table->symbols[i].name);
+kaddr_t kas_table_get_relative_base(struct kas_table *kt) {
+    return kt->relative_base;
+}
+
+void kas_table_destroy(struct kas_table *kt) {
+    for ( size_t i = 0; i < kt->symbols_nr; i++ ) {
+        kas_free(kt->symbols[i].name);
     }
-    kas_free(kas_table->symbols);
-    kas_free(kas_table);
+    kas_free(kt->symbols);
+    kas_free(kt);
 }

@@ -37,7 +37,7 @@ struct kas_info {
 
     kaddr_t kallsyms_offsets_addr;
 
-    kas_ptr_t relative_base;
+    kaddr_t relative_base_addr;
 
     kaddr_t seqs_of_names;
 };

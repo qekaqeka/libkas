@@ -281,15 +281,9 @@ static bool kas_info_calc_addrs(struct kreader *kreader, struct kas_info *info) 
     info->kallsyms_offsets_addr = align_div_ceil(token_offsets_top, KALLSYMS_LABELS_ALIGN);
 
     kaddr_t kallsyms_offsets_top = info->kallsyms_offsets_addr + info->symbols_nr * sizeof(kas_long_t);
-    kaddr_t relative_base_addr = align_div_ceil(kallsyms_offsets_top, KALLSYMS_LABELS_ALIGN);
+    info->relative_base_addr = align_div_ceil(kallsyms_offsets_top, KALLSYMS_LABELS_ALIGN);
 
-    kas_ptr_t relative_base;
-    if ( !kreader_read_var(kreader, relative_base_addr, &relative_base) )
-        return false;
-
-    info->relative_base = relative_base;
-
-    kaddr_t kallsyms_seqs_of_names_addr = align_div_ceil(relative_base_addr + sizeof(info->relative_base), KALLSYMS_LABELS_ALIGN);
+    kaddr_t kallsyms_seqs_of_names_addr = align_div_ceil(info->relative_base_addr + sizeof(kas_ptr_t), KALLSYMS_LABELS_ALIGN);
     info->seqs_of_names = kallsyms_seqs_of_names_addr;
 
     return true;

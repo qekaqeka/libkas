@@ -15,7 +15,7 @@ struct kas_table;
 /*!
  * @brief Kallsyms symbol information
  *
- * @warning name field is read-only 
+ * @warning all fields are read-only
  */
 struct kas_symbol {
     char *name; //!< Symbol name
@@ -25,6 +25,8 @@ struct kas_symbol {
 
 struct kas_table *kas_table_parse(struct kreader *kreader, struct kas_info *addrs);
 
-bool kas_table_get_symbol(struct kas_table *kast, const char *symbol, struct kas_symbol *out);
+bool kas_table_get_symbol(struct kas_table *kt, const char *symbol, struct kas_symbol *out);
 
-void kas_table_destroy(struct kas_table *kas_table);
+kaddr_t kas_table_get_relative_base(struct kas_table *kt);
+
+void kas_table_destroy(struct kas_table *kt);
