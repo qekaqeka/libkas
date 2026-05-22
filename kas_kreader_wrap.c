@@ -73,14 +73,14 @@ static ssize_t kas_kreader_buffered_func(void *arg_, kaddr_t addr, size_t len, v
 bool kas_kreader_buffered_wrap(struct kreader *kreader, void *buff, size_t capacity) {
     assert(kreader);
 
-    struct kas_kreader_buffered_arg *arg = kas_alloc_atomic(sizeof(struct kas_kreader_buffered_arg));
+    struct kas_kreader_buffered_arg *arg = kas_alloc(sizeof(struct kas_kreader_buffered_arg));
     if ( !arg )
         goto error;
 
     bool external_buff = buff != NULL;
 
     if ( !external_buff ) {
-        buff = kas_alloc_atomic(KAS_KREADER_BUFFER_CAPACITY);
+        buff = kas_alloc(KAS_KREADER_BUFFER_CAPACITY);
         if ( !buff ) 
             goto free_arg;
 
@@ -118,6 +118,8 @@ void kas_kreader_buffered_unwrap(struct kreader *kreader) {
 
         kas_free(arg->buff);
     }
+
+    kas_free(arg);
 
     *kreader = base_kreader;
 }

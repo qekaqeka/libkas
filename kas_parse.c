@@ -33,7 +33,7 @@ static bool kas_token_table_parse(struct kreader *kreader, struct kas_info *info
             token_size = offsets[i + 1] - offsets[i]; 
         }
 
-        char *token = kas_alloc_atomic(token_size);
+        char *token = kas_alloc(token_size);
         if ( !token )
             goto free_tokens;
 
@@ -128,7 +128,7 @@ static bool kas_symbols_name_parse(struct kreader *kreader, struct kas_table *kt
         if ( expand_len == KALLSYMS_SYM_MAX_LEN )
             goto free_syms;
 
-        kt->symbols[i].name = kas_alloc_atomic(expand_len + 1);
+        kt->symbols[i].name = kas_alloc(expand_len + 1);
         if ( !kt->symbols[i].name )
             goto free_syms;
 
@@ -160,12 +160,12 @@ static bool kas_symbols_offset_parse(struct kreader *kreader, struct kas_table *
 }
 
 struct kas_table *kas_table_parse(struct kreader *kreader, struct kas_info *info) {
-    struct kas_table *kt = kas_alloc_atomic(sizeof(struct kas_table));
+    struct kas_table *kt = kas_alloc(sizeof(struct kas_table));
     if ( !kt )
         return NULL;
 
     kt->symbols_nr = info->symbols_nr;
-    kt->symbols = kas_calloc_atomic(sizeof(struct kas_symbol), kt->symbols_nr);
+    kt->symbols = kas_calloc(sizeof(struct kas_symbol), kt->symbols_nr);
     if ( !kt->symbols )
         goto kt_free;
 
